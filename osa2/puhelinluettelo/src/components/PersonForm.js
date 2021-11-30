@@ -1,4 +1,5 @@
 import React from "react";
+import personTool from '../services/persons';
 
 const PersonForm = (props) => {
 
@@ -13,18 +14,37 @@ const PersonForm = (props) => {
 
     const addPerson = (event) => {
         event.preventDefault();
-        if(!props.persons.find(person => person.name === props.newName)) {
+        const findPerson = props.persons.find(person => person.name === props.newName);
+        console.log('FINDED', findPerson)
+        if(!findPerson) {
           const nameObject = {
             name: props.newName,
             number: props.newNumber
           }
-          props.setPersons(props.persons.concat(nameObject))
-          props.setNewName('')
-          props.setNewNumber('')
+
+          personTool
+            .create(nameObject)
+            .then(returnedPerson => {
+              props.setPersons(props.persons.concat(returnedPerson))
+              props.setNewName('')
+              props.setNewNumber('')
+            })
+
         } else {
-          window.alert(`${props.newName} is already added to phonebook`)
+          const result = window.confirm(`${props.newName} is already added to phonebook, replace the old number with a new one?`)
+          if(result) {
+            const updatedObject = { ...findPerson, number: props.newNumber}
+
+            personTool
+            .update(findPerson.id, updatedObject)
+            .then(returnedPerson => {
+              props.setPersons(props.persons.map(person => person.id !== findPerson.id ? person : returnedPerson))
+                //props.persons.concat(returnedPerson))
+            })
+          }
         }
       }
+
       return (
       <form onSubmit={addPerson}>
       <div>
