@@ -41,6 +41,10 @@ function App() {
     }
     }
 
+    function showOneCountry(name) {
+      setNewCountry(name);
+    }
+
 
   function checkLength() {
     const countries = showCountries()
@@ -53,7 +57,7 @@ function App() {
     } else if (countries.length > 1) {
       return (
         showCountries().map(country =>
-          <div key={country.name.common}>{country.name.common} {<button onClick={console.log('PÖÖÖÖ')} id={country.name.common+'-button'}>show</button>} </div>))
+          <div key={country.name.common}>{country.name.common} {<button onClick={()=> showOneCountry(country.name.common)} id={country.name.common+'-button'}>show</button>} </div>))
     } else if(countries.length === 1) {
       const country = countries[0];
 
