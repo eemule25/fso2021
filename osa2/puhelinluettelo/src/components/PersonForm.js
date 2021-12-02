@@ -15,7 +15,6 @@ const PersonForm = (props) => {
     const addPerson = (event) => {
         event.preventDefault();
         const findPerson = props.persons.find(person => person.name === props.newName);
-        console.log('FINDED', findPerson)
         if(!findPerson) {
           const nameObject = {
             name: props.newName,
@@ -29,6 +28,11 @@ const PersonForm = (props) => {
               props.setNewName('')
               props.setNewNumber('')
             })
+            
+          props.setSuccessMessage(`Added ${nameObject.name}`)
+          setTimeout(() => {
+            props.setSuccessMessage(null)
+          }, 3000);
 
         } else {
           const result = window.confirm(`${props.newName} is already added to phonebook, replace the old number with a new one?`)
@@ -39,8 +43,15 @@ const PersonForm = (props) => {
             .update(findPerson.id, updatedObject)
             .then(returnedPerson => {
               props.setPersons(props.persons.map(person => person.id !== findPerson.id ? person : returnedPerson))
-                //props.persons.concat(returnedPerson))
             })
+            .catch(success => {
+              props.setSuccessMessage(`Information of ${updatedObject.name} has already been removed from server`)
+            })
+
+            props.setSuccessMessage(`Person's ${updatedObject.name} number updated`)
+            setTimeout(() => {
+              props.setSuccessMessage(null)
+            }, 3000);
           }
         }
       }

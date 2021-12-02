@@ -7,7 +7,11 @@ function deletePerson(person, props, id) {
         personTool
         .remove(id)
         props.setPersons(props.persons.filter(p => p.id !== id))
-        window.alert(`${person.name} deleted!`)
+
+        props.setSuccessMessage(`${person.name} deleted!`)
+        setTimeout(() => {
+          props.setSuccessMessage(null)
+        }, 3000);
         }
 }
 
