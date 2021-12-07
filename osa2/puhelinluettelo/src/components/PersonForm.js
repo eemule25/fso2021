@@ -44,7 +44,7 @@ const PersonForm = (props) => {
             .then(returnedPerson => {
               props.setPersons(props.persons.map(person => person.id !== findPerson.id ? person : returnedPerson))
             })
-            .catch(success => {
+            .catch(error => {
               props.setSuccessMessage(`Information of ${updatedObject.name} has already been removed from server`)
             })
 
