@@ -9,7 +9,7 @@ app.use(express.static('build'))
 app.use(express.json())
 app.use(cors())
 
-morgan.token('body', (req, res) => {
+morgan.token('body', (req) => {
     if(req.method === 'POST') return JSON.stringify(req.body)
     return null
 })
@@ -19,7 +19,9 @@ const errorHandler = (error, request, response, next) => {
   console.error(error.message)
 
   if(error.name === 'CastError') {
-    return response.status(400).send({error: 'malformatted id'})
+    return response.status(400).send({ error: 'malformatted id' })
+  } else if (error.name === 'ValidationError') {
+    return response.status(400).json({ error: 'error.message' })
   }
   next(error)
 }
@@ -27,23 +29,23 @@ const errorHandler = (error, request, response, next) => {
 let persons = [
     {
         id: 1,
-        name: "Arto Hellas",
-        number: "040-123456"
+        name: 'Arto Hellas',
+        number: '040-123456'
     },
     {
       id: 2,
-      name: "Ada Lovelace",
-      number: "39-44-5323523"
+      name: 'Ada Lovelace',
+      number: '39-44-5323523'
     },
     {
       id: 3,
-      name: "Dan Abramov",
-      number: "12-43-234345"
+      name: 'Dan Abramov',
+      number: '12-43-234345'
     },
     {
         id: 4,
-        name: "Mary Poppendick",
-        number: "39-23-6423122"
+        name: 'Mary Poppendick',
+        number: '39-23-6423122'
     }
   ]
 
@@ -78,18 +80,18 @@ let persons = [
 
   app.delete('/api/persons/:id', (request, response, next) => {
     Person.findByIdAndRemove(request.params.id)
-    .then(result => {
+    .then(
       response.status(204).end()
-    })
+    )
     .catch(error => next(error))
   })
 
   const generateId = () => {
-    const id = Math.floor(Math.random() * (10000-1) + 1);
-    return id;
+    const id = Math.floor(Math.random() * (10000-1) + 1)
+    return id
   }
 
-  app.post('/api/persons', (request, response) => {
+  app.post('/api/persons', (request, response, next) => {
     const body = request.body
     const findName = persons.find(person => person.name === body.name)
 
@@ -113,9 +115,11 @@ let persons = [
         number: body.number
     })
 
-    person.save().then(savedPerson => {
-      response.json(savedPerson)
+    person.save()
+    .then(savedPerson => {
+      response.json(savedPerson.toJSON())
     })
+    .catch(error => next(error))
   })
 
   app.put('/api/notes/:id', (request, response, next) => {
@@ -126,7 +130,7 @@ let persons = [
       number: body.number
     }
 
-    Person.findByIdAndUpdate(request.params.id, person, {new: true})
+    Person.findByIdAndUpdate(request.params.id, person, { new: true })
     .then(updatedPerson => {
       response.json(updatedPerson)
     })
