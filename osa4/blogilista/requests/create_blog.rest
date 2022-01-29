@@ -1,0 +1,11 @@
+POST http://localhost:3003/api/blogs
+Content-Type: application/json
+Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InRlc3QiLCJpZCI6IjYxZjU1MWNhN2U4YTI2ZjU5Y2M4MTRiMyIsImlhdCI6MTY0MzQ2ODQxMH0.GjKWTR4Aky7MBta_FBqE9uwAHpnr5duAjcMVyEnjXCc
+
+{
+    "title": "World",
+    "author": "Scient",
+    "url": "www.world.com",
+    "likes": 22,
+    "user": "61f551ca7e8a26f59cc814b3"
+}
